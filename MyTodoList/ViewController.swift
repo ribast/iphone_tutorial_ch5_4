@@ -20,13 +20,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     @IBAction func tapAddButton(_ sender:Array) {
         // アラートダイアログの生成
-        let alertController = UIAlertController(title: "ToDo追加", message: "ToDoを入力してください", preferredStyle: UIAlertControllerStyle.alert)
+        let alertController = UIAlertController(title: "ToDo追加", message: "ToDoを入力してください", preferredStyle: UIAlertController.Style.alert)
         // テキストエリアを追加
         alertController.addTextFiled(configurationHandler: nill)
         // OKボタンを追加
         let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) { (action: UIAlertAction) in
             // OKボタンを押されたときの挙動
-            if let textField = alertController.textFileds?.first {
+            if let textField = alertController.textFields?.first {
                 // TODOの配列の先頭に入力値を挿入
                 self.todoList.insert(textField.text!, at: 0)
                 // テーブルに業が追加されたことをテーブルに通知
