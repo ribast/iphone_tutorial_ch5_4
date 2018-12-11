@@ -101,6 +101,28 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         userDefaults.set(data, forKey:"todoList")
         userDefaults.synchronize()
     }
+    
+    // セルが編集可能状態であるかどうか
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+            return true
+    }
+    
+    // セルを削除したときの処理
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        // 削除処理かどうか
+        if editingStyle == UITableViewCell.EditingStyle.delete {
+            // Todoリストから削除
+            todoList.remove(at: indexPath.row)
+            // セルを削除
+            tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.fade)
+            // Data型にシリアライズ
+            let data = NSKeyedArchiver.archivedData(withRootObject: todoList)
+            // UserDefaultsに保存
+            let userDefaults = UserDefaults.standard
+            userDefaults.set(data, forKey: "todoList")
+            userDefaults.synchronize()
+        }
+    }
 }
 
 class MyTodo: NSObject, NSCoding {
