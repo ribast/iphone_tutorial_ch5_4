@@ -18,11 +18,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         // Do any additional setup after loading the view, typically from a nib.
     }
 
-    @IBAction func tapAddButton(_ sender:Array) {
+    @IBAction func tapAddButton(_ sender: Any) {
         // アラートダイアログの生成
         let alertController = UIAlertController(title: "ToDo追加", message: "ToDoを入力してください", preferredStyle: UIAlertController.Style.alert)
         // テキストエリアを追加
-        alertController.addTextFiled(configurationHandler: nill)
+        alertController.addTextField(configurationHandler: nil)
         // OKボタンを追加
         let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) { (action: UIAlertAction) in
             // OKボタンを押されたときの挙動
