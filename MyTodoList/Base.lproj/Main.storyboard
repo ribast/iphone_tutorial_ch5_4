@@ -56,8 +56,15 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="d8o-ev-MPK">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="IvN-Nb-Yzz"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="IvN-Nb-Yzz">
+                            <connections>
+                                <action selector="tapAddButton:" destination="BYZ-38-t0r" id="CGC-45-Jnt"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="tableView" destination="890-C4-j28" id="JbO-0T-ecx"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
