@@ -65,7 +65,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Storybordで指定したtodoCell識別子を利用して、再利用可能なセルを取得する
-        let cell = tableView.dequeueReusableCell(withIdentifier: <#T##String#>, for: <#T##IndexPath#>)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath)
         // 行番号に合ったToDoの情報を取得
         let myTodo = todoList[indexPath.row]
         // セルのラベルにToDoのタイトルをセット
@@ -80,6 +80,24 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let myTodo = todoList[indexPath.row]
+        if myTodo.todoDone {
+            // 完了済みの場合は未選択に戻す
+            myTodo.todoDone = false
+        } else {
+            // 未選択の場合は完了済みにする
+            myTodo.todoDone = true
+        }
+        // セルの状態を変更
+        tableView.reloadRows(at: [indexPath], with: UITableView.RowAnimation.fade)
+        // セル情報を保存
+        let data = NSKeyedArchiver.archivedData(withRootObject: todoList)
+        // UserDefaultsに保存
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(data, forKey:"todoList")
+        userDefaults.synchronize()
+    }
 }
 
 class MyTodo: NSObject, NSCoding {
