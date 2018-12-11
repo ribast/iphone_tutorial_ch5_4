@@ -15,7 +15,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        // 保存しているToDoの読み込み処理
+        let userDefaults = UserDefaults.standard
+        if let storedToDoList = userDefaults.array(forKey: "todoList") as? [String] {
+            todoList.append(contentsOf: storedToDoList)
+        }
     }
 
     @IBAction func tapAddButton(_ sender: Any) {
@@ -31,6 +36,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 self.todoList.insert(textField.text!, at: 0)
                 // テーブルに業が追加されたことをテーブルに通知
                 self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: UITableView.RowAnimation.right)
+                
+                // ToDoの保存処理
+                let userDefaults = UserDefaults.standard
+                userDefaults.set(self.todoList, forKey: "todoList")
+                userDefaults.synchronize()
             }
         
         }
