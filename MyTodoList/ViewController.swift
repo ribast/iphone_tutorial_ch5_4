@@ -57,6 +57,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let cancelButton = UIAlertAction(title: "CANCEL", style: UIAlertAction.Style.cancel, handler: nil)
         // CANCELボタンを追加
         alertController.addAction(cancelButton)
+        
+        // アラートダイアログを表示
+        present(alertController, animated: true, completion: nil)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
