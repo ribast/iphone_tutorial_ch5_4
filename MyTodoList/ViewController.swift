@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    var todoList = [String]()
+    var todoList = [MyTodo]()
     @IBOutlet weak var tableView: UITableView!
 
     override func viewDidLoad() {
@@ -18,8 +18,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         // 保存しているToDoの読み込み処理
         let userDefaults = UserDefaults.standard
-        if let storedToDoList = userDefaults.array(forKey: "todoList") as? [String] {
-            todoList.append(contentsOf: storedToDoList)
+        if let storedTodoList = userDefaults.object(forKey: "todoList") as? Data {
+            if let unarchiveTodoList = NSKeyedUnarchiver.unarchiveObject(with: storedTodoList) as? [MyTodo] {
+                todoList.append(contentsOf: unarchiveTodoList)
+            }
         }
     }
 
@@ -33,13 +35,17 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             // OKボタンを押されたときの挙動
             if let textField = alertController.textFields?.first {
                 // TODOの配列の先頭に入力値を挿入
-                self.todoList.insert(textField.text!, at: 0)
+                let myTodo = MyTodo()
+                myTodo.todoTitle = textField.text!
+                self.todoList.insert(myTodo, at: 0)
                 // テーブルに業が追加されたことをテーブルに通知
                 self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: UITableView.RowAnimation.right)
                 
                 // ToDoの保存処理
                 let userDefaults = UserDefaults.standard
-                userDefaults.set(self.todoList, forKey: "todoList")
+                // Data型にシリアライズ
+                let data = NSKeyedArchiver.archivedData(withRootObject: self.todoList)
+                userDefaults.set(data, forKey: "todoList")
                 userDefaults.synchronize()
             }
         
@@ -60,11 +66,42 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Storybordで指定したtodoCell識別子を利用して、再利用可能なセルを取得する
         let cell = tableView.dequeueReusableCell(withIdentifier: <#T##String#>, for: <#T##IndexPath#>)
-        // 行番号に合ったToDoのタイトルを取得
-        let todoTitle = todoList[indexPath.row]
+        // 行番号に合ったToDoの情報を取得
+        let myTodo = todoList[indexPath.row]
         // セルのラベルにToDoのタイトルをセット
-        cell.textLabel?.text = todoTitle
+        cell.textLabel?.text = myTodo.todoTitle
+        // セルのチェックマーク状態をセット
+        if myTodo.todoDone {
+            // チェックあり
+            cell.accessoryType = UITableViewCell.AccessoryType.checkmark
+        } else {
+            cell.accessoryType = UITableViewCell.AccessoryType.none
+        }
         return cell
     }
+    
 }
 
+class MyTodo: NSObject, NSCoding {
+    
+    // ToDoのタイトル
+    var todoTitle: String?
+    // チェックフラグ
+    var todoDone: Bool = false
+    // コンストラクタ
+    override init(){
+        
+    }
+    
+    // デコード処理
+    required init?(coder aDecoder: NSCoder) {
+        todoTitle = aDecoder.decodeObject(forKey: "todoTitle") as? String
+        todoDone = aDecoder.decodeBool(forKey: "todoDone")
+    }
+    
+    // エンコード処理
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(todoTitle, forKey: "todoTitle")
+        aCoder.encode(todoDone, forKey: "todoDone")
+    }
+}
